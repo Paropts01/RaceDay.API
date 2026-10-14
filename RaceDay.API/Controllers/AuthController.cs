@@ -1,75 +1,92 @@
-﻿using BCrypt.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.API.Atrributes;
-using RaceDay.API.Data;
-using RaceDay.API.Dto;
+using RaceDay.Api.Attributes;
+using RaceDay.Api.Data;
+using RaceDay.Api.DTOs;
+using RaceDay.Api.Models;
+using RaceDay.Api.Services;
+using RaceDay.API.Controllers;
 using RaceDay.API.Models;
 
-namespace RaceDay.API.Controllers
+namespace RaceDay.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    private readonly AppDbContext _db;
+
+    public AuthController(AppDbContext db) => _db = db;
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterDto dto)
     {
-        private readonly AppDbContext _context;
+        if (await _db.Users.AnyAsync(u => u.Email == dto.Email || u.Username == dto.Username))
+            return BadRequest("Username or email already exists.");
 
-        public AuthController(AppDbContext context) => _context = context;
+        if (dto.Role != "Organiser" && dto.Role != "Participant")
+            return BadRequest("Role must be Organiser or Participant.");
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(EventDtos dto)
+        var (hash, salt) = PasswordHasher.CreateHash(dto.Password);
+
+        var user = new User
         {
-            if (await _context.Users.AnyAsync(u => u.Username == dto.Username || u.Email == dto.Email))
-                return BadRequest("Username or email already exists.");
+            Username = dto.Username,
+            Email = dto.Email,
+            PasswordHash = hash,
+            PasswordSalt = salt,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            DateOfBirth = dto.DateOfBirth,
+            PhoneNumber = dto.PhoneNumber,
+            Role = dto.Role
+        };
 
-            var user = new User
-            {
-                Username = dto.Username,
-                Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                FirstName = dto.FirstName,  
-                LastName = dto.LastName,
-                DateOfBirth = dto.DateOfBirth,
-                PhoneNumber = dto.PhoneNumber,
-                Role = dto.Role
-            };
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+        if (dto.Role == "Organiser")
+            _db.Organisers.Add(new Organiser { UserID = user.UserID });
+        else
+            _db.Participants.Add(new Participant { UserID = user.UserID });
 
-            // Create Organiser or Participant record
-            if (dto.Role == "Organiser")
-            {
-                _context.Organisers.Add(new Organiser { UserID = user.UserID });
-            }
-            else if (dto.Role == "Participant")
-            {
-                _context.Participants.Add(new Participant { UserID = user.UserID });
-            }
-            await _context.SaveChangesAsync();
+        await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Register), new { id = user.UserID }, new { user.UserID, user.Username, user.Role });
-        }
+        HttpContext.Session.SetInt32("UserID", user.UserID);
+        HttpContext.Session.SetString("Role", user.Role);
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(AuthDtos dto)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                return Unauthorized("Invalid credentials.");
+        return CreatedAtAction(nameof(ProfileController.Get), null,
+            new UserResponseDto(user.UserID, user.Username, user.Email,
+                user.FirstName, user.LastName, user.Role));
+    }
 
-            HttpContext.Session.SetUser(user.UserID, user.Role);
-            user.LastLoginDate = DateTime.Now;
-            await _context.SaveChangesAsync();
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginDto dto)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(u =>
+            u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
 
-            return Ok(new { user.UserID, user.Username, user.Role });
-        }
+        if (user == null || !user.IsActive)
+            return Unauthorized("Invalid credentials.");
 
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return Ok("Logged out.");
-        }
+        if (!PasswordHasher.Verify(dto.Password, user.PasswordHash, user.PasswordSalt))
+            return Unauthorized("Invalid credentials.");
+
+        user.LastLoginDate = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+
+        HttpContext.Session.SetInt32("UserID", user.UserID);
+        HttpContext.Session.SetString("Role", user.Role);
+
+        return Ok(new UserResponseDto(user.UserID, user.Username, user.Email,
+            user.FirstName, user.LastName, user.Role));
+    }
+
+    [HttpPost("logout")]
+    [SessionAuthorize]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return Ok("Logout successful.");
     }
 }
