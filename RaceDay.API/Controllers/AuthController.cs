@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Dto;
 using RaceDay.API.Models;
 
-namespace RaceDay.API
+namespace RaceDay.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

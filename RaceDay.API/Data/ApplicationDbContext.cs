@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Models;
 
-namespace RaceDay.API
+namespace RaceDay.API.Data
 {
     public class ApplicationDbContext : DbContext
     {
