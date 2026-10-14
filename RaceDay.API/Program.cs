@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using RaceDay.API;
 
 var builder = WebApplication.CreateBuilder(args);
 

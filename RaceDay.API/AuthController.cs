@@ -25,7 +25,7 @@ namespace RaceDay.API
                 Username = dto.Username,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                FirstName = dto.FirstName,
+                FirstName = dto.FirstName,  
                 LastName = dto.LastName,
                 DateOfBirth = dto.DateOfBirth,
                 PhoneNumber = dto.PhoneNumber,
