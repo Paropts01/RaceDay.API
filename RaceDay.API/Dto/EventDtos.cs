@@ -1,6 +1,6 @@
 ﻿namespace RaceDay.API.Dto
 {
-    public class RegisterDto
+    public class EventDtos
     {
         public string Username { get; set; }
         public string Email { get; set; }

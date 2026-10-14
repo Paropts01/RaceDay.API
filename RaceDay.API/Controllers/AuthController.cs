@@ -11,12 +11,12 @@ namespace RaceDay.API.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public AuthController(ApplicationDbContext context) => _context = context;
+        public AuthController(AppDbContext context) => _context = context;
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        public async Task<IActionResult> Register(EventDtos dto)
         {
             if (await _context.Users.AnyAsync(u => u.Username == dto.Username || u.Email == dto.Email))
                 return BadRequest("Username or email already exists.");
@@ -51,7 +51,7 @@ namespace RaceDay.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login(AuthDtos dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
