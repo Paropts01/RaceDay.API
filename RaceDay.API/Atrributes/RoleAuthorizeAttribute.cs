@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace RaceDay.API.Atrributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class AuthorizeRoleAttribute : Attribute, IAuthorizationFilter
+    public class RoleAuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         private readonly string[] _roles;
 
-        public AuthorizeRoleAttribute(params string[] roles) => _roles = roles;
+        public RoleAuthorizeAttribute(params string[] roles) => _roles = roles;
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {

@@ -1,21 +1,26 @@
-﻿namespace RaceDay.API.Atrributes
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace RaceDay.Api.Attributes;
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+public class RoleAuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    public static class SessionAuthorizeAtrribute
+    private readonly string _role;
+
+    public RoleAuthorizeAttribute(string role) => _role = role;
+
+    public void OnAuthorization(AuthorizationFilterContext context)
     {
-        public static void SetUser(this ISession session, int userId, string role)
+        var userId = context.HttpContext.Session.GetInt32("UserID");
+        if (userId == null)
         {
-            session.SetInt32("UserId", userId);
-            session.SetString("Role", role);
+            context.Result = new UnauthorizedResult();
+            return;
         }
 
-        public static int? GetUserId(this ISession session)
-        {
-            return session.GetInt32("UserId");
-        }
-
-        public static string? GetRole(this ISession session)
-        {
-            return session.GetString("Role");
-        }
+        var role = context.HttpContext.Session.GetString("Role");
+        if (role != _role)
+            context.Result = new ForbidResult();
     }
 }
