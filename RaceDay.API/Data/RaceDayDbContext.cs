@@ -20,7 +20,8 @@ public class RaceDayDbContext : DbContext
         // User
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-        modelBuilder.Entity<User>().HasCheckConstraint("CK_User_Role", "[Role] IN ('Organiser', 'Participant')");
+        modelBuilder.Entity<User>().ToTable(t =>
+            t.HasCheckConstraint("CK_User_Role", "[Role] IN ('Organiser', 'Participant')"));
 
         // Organiser
         modelBuilder.Entity<Organiser>()
@@ -36,13 +37,15 @@ public class RaceDayDbContext : DbContext
         modelBuilder.Entity<Event>()
             .HasOne(e => e.Organiser).WithMany(o => o.Events)
             .HasForeignKey(e => e.OrganiserID).OnDelete(DeleteBehavior.Cascade);
-        modelBuilder.Entity<Event>().HasCheckConstraint("CK_Event_Type", "[EventType] IN ('Run', 'Walk', 'Cycle')");
+        modelBuilder.Entity<Event>().ToTable(t =>
+            t.HasCheckConstraint("CK_Event_Type", "[EventType] IN ('Run', 'Walk', 'Cycle')"));
 
         // Category
         modelBuilder.Entity<Category>()
             .HasOne(c => c.Event).WithMany(e => e.Categories)
             .HasForeignKey(c => c.EventID).OnDelete(DeleteBehavior.Cascade);
-        modelBuilder.Entity<Category>().HasCheckConstraint("CK_Category_Type", "[CategoryType] IN ('Age', 'Distance', 'Other') OR [CategoryType] IS NULL");
+        modelBuilder.Entity<Category>().ToTable(t =>
+            t.HasCheckConstraint("CK_Category_Type", "[CategoryType] IN ('Age', 'Distance', 'Other') OR [CategoryType] IS NULL"));
 
         // EventEnrolment
         modelBuilder.Entity<EventEnrolment>()
@@ -54,15 +57,19 @@ public class RaceDayDbContext : DbContext
         modelBuilder.Entity<EventEnrolment>()
             .HasOne(ee => ee.Category).WithMany(c => c.EventEnrolments)
             .HasForeignKey(ee => ee.CategoryID).OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<EventEnrolment>().HasIndex(ee => new { ee.ParticipantID, ee.EventID }).IsUnique();
-        modelBuilder.Entity<EventEnrolment>().HasCheckConstraint("CK_Enrolment_Status", "[Status] IN ('Pending', 'Confirmed', 'Cancelled', 'Completed')");
-        modelBuilder.Entity<EventEnrolment>().HasCheckConstraint("CK_Enrolment_PaymentStatus", "[PaymentStatus] IN ('Pending', 'Paid', 'Refunded')");
+        modelBuilder.Entity<EventEnrolment>().ToTable(t =>
+            t.HasCheckConstraint("CK_Enrolment_Status", "[Status] IN ('Pending', 'Confirmed', 'Cancelled', 'Completed')"));
+        modelBuilder.Entity<EventEnrolment>().ToTable(t =>
+            t.HasCheckConstraint("CK_Enrolment_PaymentStatus", "[PaymentStatus] IN ('Pending', 'Paid', 'Refunded')"));
 
         // Result
         modelBuilder.Entity<Result>()
             .HasOne(r => r.Enrolment).WithOne(ee => ee.Result)
             .HasForeignKey<Result>(r => r.EnrolmentID).OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Result>().HasIndex(r => r.EnrolmentID).IsUnique();
-        modelBuilder.Entity<Result>().HasCheckConstraint("CK_Result_Status", "[Status] IN ('Not Started', 'In Progress', 'Finished', 'DNF', 'DQ')");
+        modelBuilder.Entity<Result>().ToTable(t =>
+            t.HasCheckConstraint("CK_Result_Status", "[Status] IN ('Not Started', 'In Progress', 'Finished', 'DNF', 'DQ')"));
     }
 }
