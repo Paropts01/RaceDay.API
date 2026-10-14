@@ -1,6 +1,6 @@
-﻿namespace RaceDay.API
+﻿namespace RaceDay.API.Atrributes
 {
-    public static class SessionExtensions
+    public static class SessionAuthorizeAtrribute
     {
         public static void SetUser(this ISession session, int userId, string role)
         {

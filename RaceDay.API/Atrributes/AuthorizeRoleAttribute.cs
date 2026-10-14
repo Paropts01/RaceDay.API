@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 
 
-namespace RaceDay.API
+namespace RaceDay.API.Atrributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeRoleAttribute : Attribute, IAuthorizationFilter
