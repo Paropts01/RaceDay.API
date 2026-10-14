@@ -3,12 +3,14 @@ using RaceDay.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// EF Core
+// Register Entity Framework Core
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Session
+// Register session services
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -16,25 +18,35 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Controllers + Swagger
+// Register controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "RaceDay API", Version = "v1" });
+    c.SwaggerDoc("v1", new()
+    {
+        Title = "RaceDay API",
+        Version = "v1"
+    });
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Enable Swagger temporarily for troubleshooting
+app.UseSwagger();
+
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RaceDay API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseHttpsRedirection();
-app.UseSession(); // Important for session auth
+
+app.UseSession();
+
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
