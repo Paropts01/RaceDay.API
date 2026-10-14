@@ -1,6 +1,7 @@
 ﻿using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RaceDay.API.Data;
 using RaceDay.API.Dto;
 using RaceDay.API.Models;
 
