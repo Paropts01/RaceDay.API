@@ -1,8 +1,23 @@
-﻿namespace RaceDay.API.Dto
-{
-    public class AuthDtos
-    {
-        public string UsernameOrEmail { get; set; }
-        public string Password { get; set; }
-    }
-}
+﻿namespace RaceDay.Api.DTOs;
+
+public record RegisterDto(
+    string Username,
+    string Email,
+    string Password,
+    string FirstName,
+    string LastName,
+    DateTime DateOfBirth,
+    string? PhoneNumber,
+    string Role
+);
+
+public record LoginDto(string UsernameOrEmail, string Password);
+
+public record UserResponseDto(
+    int UserID,
+    string Username,
+    string Email,
+    string FirstName,
+    string LastName,
+    string Role
+);

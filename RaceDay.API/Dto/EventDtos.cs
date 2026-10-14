@@ -1,15 +1,40 @@
-﻿namespace RaceDay.API.Dto
-{
-    public class EventDtos
-    {
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string Role { get; set; } // "Organiser" or "Participant"
+﻿namespace RaceDay.Api.DTOs;
 
-    }
-}
+public record EventCreateDto(
+    string Name,
+    string? Description,
+    DateTime EventDate,
+    string Location,
+    decimal Distance,
+    string EventType,
+    string? BannerImageURL,
+    int? MaxParticipants,
+    DateTime? RegistrationDeadline
+);
+
+public record EventUpdateDto(
+    string Name,
+    string? Description,
+    DateTime EventDate,
+    string Location,
+    decimal Distance,
+    string EventType,
+    string? BannerImageURL,
+    int? MaxParticipants,
+    DateTime? RegistrationDeadline
+);
+
+public record EventResponseDto(
+    int EventID,
+    int OrganiserID,
+    string Name,
+    string? Description,
+    DateTime EventDate,
+    string Location,
+    decimal Distance,
+    string EventType,
+    string? BannerImageURL,
+    int? MaxParticipants,
+    DateTime? RegistrationDeadline,
+    bool IsActive
+);
