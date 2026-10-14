@@ -1,10 +1,11 @@
 ﻿using RaceDay.API.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace RaceDay.Api.Models;
+namespace RaceDay.API.Models;
 
 public class Category
 {
+    [Key]
     public int CategoryID { get; set; }
 
     [Required]

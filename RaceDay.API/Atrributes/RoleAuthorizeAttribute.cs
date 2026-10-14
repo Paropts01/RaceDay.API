@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
+namespace RaceDay.API.Attributes;
 
-namespace RaceDay.API.Atrributes
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+public class RoleAuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class RoleAuthorizeAttribute : Attribute, IAuthorizationFilter
+    private readonly string _role;
+
+    public RoleAuthorizeAttribute(string role) => _role = role;
+
+    public void OnAuthorization(AuthorizationFilterContext context)
     {
-        private readonly string[] _roles;
-
-        public RoleAuthorizeAttribute(params string[] roles) => _roles = roles;
-
-        public void OnAuthorization(AuthorizationFilterContext context)
+        var userId = context.HttpContext.Session.GetInt32("UserID");
+        if (userId == null)
         {
-            var userId = context.HttpContext.Session.GetInt32("UserId");
-            var role = context.HttpContext.Session.GetString("Role");
-
-            if (userId == null)
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-
-            if (_roles.Any() && !_roles.Contains(role))
-            {
-                context.Result = new ForbidResult();
-            }
+            context.Result = new UnauthorizedResult();
+            return;
         }
+
+        var role = context.HttpContext.Session.GetString("Role");
+        if (role != _role)
+            context.Result = new ForbidResult();
     }
 }

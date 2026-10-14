@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
 using RaceDay.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Database
-builder.Services.AddDbContext<AppDbContext>(options =>
+// EF Core
+builder.Services.AddDbContext<RaceDayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Session
@@ -17,15 +16,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Controllers
+// Controllers + Swagger
 builder.Services.AddControllers();
-
-// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RaceDay API", Version = "v1" });
-    // Include XML comments if enabled
+    c.SwaggerDoc("v1", new() { Title = "RaceDay API", Version = "v1" });
 });
 
 var app = builder.Build();
@@ -37,7 +33,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseSession(); // Must be before UseAuthorization
+app.UseSession(); // Important for session auth
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

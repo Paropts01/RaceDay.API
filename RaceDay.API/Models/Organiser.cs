@@ -5,6 +5,7 @@ namespace RaceDay.API.Models;
 
 public class Organiser
 {
+    [Key]
     public int OrganiserID { get; set; }
 
     [Required]

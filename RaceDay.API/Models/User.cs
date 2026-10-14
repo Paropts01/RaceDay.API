@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RaceDay.API.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace RaceDay.API.Models;
 
 public class User
 {
+    [Key]
     public int UserID { get; set; }
 
     [Required, MaxLength(50)]

@@ -1,136 +1,123 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Attributes;
-using RaceDay.Api.Data;
-using RaceDay.Api.DTOs;
-using RaceDay.Api.Models;
+using RaceDay.API.Attributes;
+using RaceDay.API.Data;
+using RaceDay.API.DTOs;
+using RaceDay.API.Models;
 
-namespace RaceDay.Api.Controllers;
+namespace RaceDay.API.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("api/[controller]")]
 [SessionAuthorize]
-public class EnrolmentsController : ControllerBase
+public class EventsController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly RaceDayDbContext _db;
 
-    public EnrolmentsController(AppDbContext db) => _db = db;
+    public EventsController(RaceDayDbContext db) => _db = db;
 
     private int CurrentUserId => HttpContext.Session.GetInt32("UserID")!.Value;
 
-    [HttpPost("events/{eventId}/enrol")]
-    [RoleAuthorize("Participant")]
-    public async Task<IActionResult> Enrol(int eventId, EnrolDto dto)
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] string? type, [FromQuery] DateTime? date, [FromQuery] string? location)
     {
-        var participant = await _db.Participants.FirstOrDefaultAsync(p => p.UserID == CurrentUserId);
-        if (participant == null) return Forbid();
+        var query = _db.Events.AsQueryable();
 
-        var ev = await _db.Events.FindAsync(eventId);
-        if (ev == null) return NotFound("Event not found.");
+        if (!string.IsNullOrEmpty(type))
+            query = query.Where(e => e.EventType == type);
+        if (date.HasValue)
+            query = query.Where(e => e.EventDate.Date == date.Value.Date);
+        if (!string.IsNullOrEmpty(location))
+            query = query.Where(e => e.Location.Contains(location));
 
-        var category = await _db.Categories.FirstOrDefaultAsync(c => c.CategoryID == dto.CategoryId && c.EventID == eventId);
-        if (category == null) return NotFound("Category not found for this event.");
+        var events = await query.Select(e => new EventResponseDto(
+            e.EventID, e.OrganiserID, e.Name, e.Description, e.EventDate,
+            e.Location, e.Distance, e.EventType, e.BannerImageURL,
+            e.MaxParticipants, e.RegistrationDeadline, e.IsActive)).ToListAsync();
 
-        if (await _db.EventEnrolments.AnyAsync(ee => ee.ParticipantID == participant.ParticipantID && ee.EventID == eventId))
-            return BadRequest("Already enrolled in this event.");
+        return Ok(events);
+    }
 
-        var enrolment = new EventEnrolment
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        var ev = await _db.Events.FindAsync(id);
+        if (ev == null) return NotFound();
+
+        return Ok(new EventResponseDto(
+            ev.EventID, ev.OrganiserID, ev.Name, ev.Description, ev.EventDate,
+            ev.Location, ev.Distance, ev.EventType, ev.BannerImageURL,
+            ev.MaxParticipants, ev.RegistrationDeadline, ev.IsActive));
+    }
+
+    [HttpPost]
+    [RoleAuthorize("Organiser")]
+    public async Task<IActionResult> Create(EventCreateDto dto)
+    {
+        var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
+        if (organiser == null) return Forbid();
+
+        var ev = new Event
         {
-            ParticipantID = participant.ParticipantID,
-            EventID = eventId,
-            CategoryID = dto.CategoryId,
-            Status = "Pending",
-            PaymentStatus = "Pending"
+            OrganiserID = organiser.OrganiserID,
+            Name = dto.Name,
+            Description = dto.Description,
+            EventDate = dto.EventDate,
+            Location = dto.Location,
+            Distance = dto.Distance,
+            EventType = dto.EventType,
+            BannerImageURL = dto.BannerImageURL,
+            MaxParticipants = dto.MaxParticipants,
+            RegistrationDeadline = dto.RegistrationDeadline
         };
 
-        _db.EventEnrolments.Add(enrolment);
+        _db.Events.Add(ev);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetMyEnrolments), null,
-            new EnrolmentResponseDto(enrolment.EnrolmentID, enrolment.ParticipantID,
-                enrolment.EventID, enrolment.CategoryID, enrolment.EnrolmentDate,
-                enrolment.Status, enrolment.PaymentStatus, enrolment.BibNumber, enrolment.Notes));
+        return CreatedAtAction(nameof(Get), new { id = ev.EventID },
+            new EventResponseDto(ev.EventID, ev.OrganiserID, ev.Name, ev.Description,
+                ev.EventDate, ev.Location, ev.Distance, ev.EventType,
+                ev.BannerImageURL, ev.MaxParticipants, ev.RegistrationDeadline, ev.IsActive));
     }
 
-    [HttpGet("events/{eventId}/enrolments")]
+    [HttpPut("{id}")]
     [RoleAuthorize("Organiser")]
-    public async Task<IActionResult> GetEventEnrolments(int eventId)
+    public async Task<IActionResult> Update(int id, EventUpdateDto dto)
     {
-        var ev = await _db.Events.FindAsync(eventId);
-        if (ev == null) return NotFound("Event not found.");
+        var ev = await _db.Events.FindAsync(id);
+        if (ev == null) return NotFound();
 
         var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
-        if (organiser == null || ev.OrganiserID != organiser.OrganiserID)
-            return Forbid();
+        if (organiser == null || ev.OrganiserID != organiser.OrganiserID) return Forbid();
 
-        var enrolments = await _db.EventEnrolments
-            .Where(ee => ee.EventID == eventId)
-            .Include(ee => ee.Participant).ThenInclude(p => p.User)
-            .Include(ee => ee.Category)
-            .Select(ee => new
-            {
-                ee.EnrolmentID,
-                ParticipantName = ee.Participant.User.FirstName + " " + ee.Participant.User.LastName,
-                ee.Participant.User.Email,
-                Category = ee.Category.Name,
-                ee.Status,
-                ee.PaymentStatus,
-                ee.BibNumber,
-                ee.EnrolmentDate
-            })
-            .ToListAsync();
+        ev.Name = dto.Name;
+        ev.Description = dto.Description;
+        ev.EventDate = dto.EventDate;
+        ev.Location = dto.Location;
+        ev.Distance = dto.Distance;
+        ev.EventType = dto.EventType;
+        ev.BannerImageURL = dto.BannerImageURL;
+        ev.MaxParticipants = dto.MaxParticipants;
+        ev.RegistrationDeadline = dto.RegistrationDeadline;
 
-        return Ok(enrolments);
-    }
-
-    [HttpGet("participants/enrolments")]
-    [RoleAuthorize("Participant")]
-    public async Task<IActionResult> GetMyEnrolments()
-    {
-        var participant = await _db.Participants.FirstOrDefaultAsync(p => p.UserID == CurrentUserId);
-        if (participant == null) return Forbid();
-
-        var enrolments = await _db.EventEnrolments
-            .Where(ee => ee.ParticipantID == participant.ParticipantID)
-            .Include(ee => ee.Event)
-            .Include(ee => ee.Category)
-            .Select(ee => new
-            {
-                ee.EnrolmentID,
-                Event = ee.Event.Name,
-                ee.Event.EventDate,
-                Category = ee.Category.Name,
-                ee.Status,
-                ee.PaymentStatus,
-                ee.BibNumber
-            })
-            .ToListAsync();
-
-        return Ok(enrolments);
-    }
-
-    [HttpPut("enrolments/{id}/status")]
-    [RoleAuthorize("Organiser")]
-    public async Task<IActionResult> UpdateStatus(int id, EnrolmentStatusUpdateDto dto)
-    {
-        var enrolment = await _db.EventEnrolments
-            .Include(ee => ee.Event)
-            .FirstOrDefaultAsync(ee => ee.EnrolmentID == id);
-
-        if (enrolment == null) return NotFound();
-
-        var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
-        if (organiser == null || enrolment.Event.OrganiserID != organiser.OrganiserID)
-            return Forbid();
-
-        if (dto.Status != "Pending" && dto.Status != "Confirmed" && dto.Status != "Cancelled" && dto.Status != "Completed")
-            return BadRequest("Invalid status.");
-
-        enrolment.Status = dto.Status;
         await _db.SaveChangesAsync();
+        return Ok(new EventResponseDto(ev.EventID, ev.OrganiserID, ev.Name, ev.Description,
+            ev.EventDate, ev.Location, ev.Distance, ev.EventType,
+            ev.BannerImageURL, ev.MaxParticipants, ev.RegistrationDeadline, ev.IsActive));
+    }
 
-        return Ok(new EnrolmentResponseDto(enrolment.EnrolmentID, enrolment.ParticipantID,
-            enrolment.EventID, enrolment.CategoryID, enrolment.EnrolmentDate,
-            enrolment.Status, enrolment.PaymentStatus, enrolment.BibNumber, enrolment.Notes));
+    [HttpDelete("{id}")]
+    [RoleAuthorize("Organiser")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var ev = await _db.Events.FindAsync(id);
+        if (ev == null) return NotFound();
+
+        var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
+        if (organiser == null || ev.OrganiserID != organiser.OrganiserID) return Forbid();
+
+        _db.Events.Remove(ev);
+        await _db.SaveChangesAsync();
+        return NoContent();
     }
 }

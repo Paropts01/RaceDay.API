@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Attributes;
-using RaceDay.Api.Data;
-using RaceDay.Api.DTOs;
+using RaceDay.API.Attributes;
+using RaceDay.API.Data;
+using RaceDay.API.DTOs;
 
-namespace RaceDay.Api.Controllers;
+namespace RaceDay.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [SessionAuthorize]
 public class ProfileController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly RaceDayDbContext _db;
 
-    public ProfileController(AppDbContext db) => _db = db;
+    public ProfileController(RaceDayDbContext db) => _db = db;
 
     private int CurrentUserId => HttpContext.Session.GetInt32("UserID")!.Value;
 

@@ -1,10 +1,11 @@
 ﻿using RaceDay.API.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace RaceDay.Api.Models;
+namespace RaceDay.API.Models;
 
 public class EventEnrolment
 {
+    [Key]
     public int EnrolmentID { get; set; }
 
     [Required]

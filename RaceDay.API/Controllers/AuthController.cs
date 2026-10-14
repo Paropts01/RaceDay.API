@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Attributes;
-using RaceDay.Api.Data;
-using RaceDay.Api.DTOs;
-using RaceDay.Api.Models;
-using RaceDay.Api.Services;
-using RaceDay.API.Controllers;
+using RaceDay.API.Attributes;
+using RaceDay.API.Data;
+using RaceDay.API.DTOs;
 using RaceDay.API.Models;
+using RaceDay.API.Services;
 
-namespace RaceDay.Api.Controllers;
+namespace RaceDay.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly RaceDayDbContext _db;
 
-    public AuthController(AppDbContext db) => _db = db;
+    public AuthController(RaceDayDbContext db) => _db = db;
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
@@ -55,16 +53,13 @@ public class AuthController : ControllerBase
         HttpContext.Session.SetInt32("UserID", user.UserID);
         HttpContext.Session.SetString("Role", user.Role);
 
-        return CreatedAtAction(nameof(ProfileController.Get), null,
-            new UserResponseDto(user.UserID, user.Username, user.Email,
-                user.FirstName, user.LastName, user.Role));
+        return CreatedAtAction(nameof(ProfileController.Get), null, new UserResponseDto(user.UserID, user.Username, user.Email, user.FirstName, user.LastName, user.Role));
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u =>
-            u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == dto.UsernameOrEmail || u.Email == dto.UsernameOrEmail);
 
         if (user == null || !user.IsActive)
             return Unauthorized("Invalid credentials.");
@@ -78,8 +73,7 @@ public class AuthController : ControllerBase
         HttpContext.Session.SetInt32("UserID", user.UserID);
         HttpContext.Session.SetString("Role", user.Role);
 
-        return Ok(new UserResponseDto(user.UserID, user.Username, user.Email,
-            user.FirstName, user.LastName, user.Role));
+        return Ok(new UserResponseDto(user.UserID, user.Username, user.Email, user.FirstName, user.LastName, user.Role));
     }
 
     [HttpPost("logout")]

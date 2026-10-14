@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Attributes;
-using RaceDay.Api.Data;
-using RaceDay.Api.DTOs;
-using RaceDay.Api.Models;
+using RaceDay.API.Attributes;
+using RaceDay.API.Data;
+using RaceDay.API.DTOs;
+using RaceDay.API.Models;
 
-namespace RaceDay.Api.Controllers;
+namespace RaceDay.API.Controllers;
 
 [ApiController]
 [Route("api")]
 [SessionAuthorize]
 public class ResultsController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly RaceDayDbContext _db;
 
-    public ResultsController(AppDbContext db) => _db = db;
+    public ResultsController(RaceDayDbContext db) => _db = db;
 
     private int CurrentUserId => HttpContext.Session.GetInt32("UserID")!.Value;
 
@@ -26,11 +26,9 @@ public class ResultsController : ControllerBase
         if (ev == null) return NotFound("Event not found.");
 
         var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
-        if (organiser == null || ev.OrganiserID != organiser.OrganiserID)
-            return Forbid();
+        if (organiser == null || ev.OrganiserID != organiser.OrganiserID) return Forbid();
 
-        var enrolment = await _db.EventEnrolments
-            .FirstOrDefaultAsync(ee => ee.EnrolmentID == dto.EnrolmentId && ee.EventID == eventId);
+        var enrolment = await _db.EventEnrolments.FirstOrDefaultAsync(ee => ee.EnrolmentID == dto.EnrolmentId && ee.EventID == eventId);
         if (enrolment == null) return BadRequest("Enrolment not found for this event.");
 
         if (await _db.Results.AnyAsync(r => r.EnrolmentID == dto.EnrolmentId))
@@ -65,11 +63,9 @@ public class ResultsController : ControllerBase
         if (ev == null) return NotFound("Event not found.");
 
         var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
-        if (organiser == null || ev.OrganiserID != organiser.OrganiserID)
-            return Forbid();
+        if (organiser == null || ev.OrganiserID != organiser.OrganiserID) return Forbid();
 
-        var results = await _db.Results
-            .Include(r => r.Enrolment).ThenInclude(ee => ee.Participant).ThenInclude(p => p.User)
+        var results = await _db.Results.Include(r => r.Enrolment).ThenInclude(ee => ee.Participant).ThenInclude(p => p.User)
             .Where(r => r.Enrolment.EventID == eventId)
             .Select(r => new
             {
@@ -82,8 +78,7 @@ public class ResultsController : ControllerBase
                 r.CategoryPlacement,
                 r.Status,
                 r.IsPublished
-            })
-            .ToListAsync();
+            }).ToListAsync();
 
         return Ok(results);
     }
@@ -111,8 +106,7 @@ public class ResultsController : ControllerBase
                 r.OverallPlacement,
                 r.CategoryPlacement,
                 r.Status
-            })
-            .ToListAsync();
+            }).ToListAsync();
 
         return Ok(results);
     }
@@ -121,15 +115,11 @@ public class ResultsController : ControllerBase
     [RoleAuthorize("Organiser")]
     public async Task<IActionResult> Update(int id, ResultUpdateDto dto)
     {
-        var result = await _db.Results
-            .Include(r => r.Enrolment).ThenInclude(ee => ee.Event)
-            .FirstOrDefaultAsync(r => r.ResultID == id);
-
+        var result = await _db.Results.Include(r => r.Enrolment).ThenInclude(ee => ee.Event).FirstOrDefaultAsync(r => r.ResultID == id);
         if (result == null) return NotFound();
 
         var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserID == CurrentUserId);
-        if (organiser == null || result.Enrolment.Event.OrganiserID != organiser.OrganiserID)
-            return Forbid();
+        if (organiser == null || result.Enrolment.Event.OrganiserID != organiser.OrganiserID) return Forbid();
 
         result.FinishTime = dto.FinishTime;
         result.NetTime = dto.NetTime;

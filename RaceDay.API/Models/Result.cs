@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RaceDay.Api.Models;
+namespace RaceDay.API.Models;
 
 public class Result
 {
+    [Key]
     public int ResultID { get; set; }
 
     [Required]
