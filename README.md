@@ -6,6 +6,10 @@ RaceDay API is a web API developed using ASP.NET Core. It provides endpoints tha
 
 The API uses Entity Framework Core to communicate with a SQL Server database. Swagger is used to document the API endpoints and test API requests.
 
+## Description of the two roles
+In a raceday application, the organiser acts as the manager who sets up and runs the entire event. They use a special dashboard to open registration, design the race track, track volunteers, and monitor overall safety during the race. They also handle the final official timing leaderboards and have the power to send mass emergency alerts to everyone's phone if something unexpected happens.
+The participant, on the other hand, is the person actually running or cycling in the race. They use a simple mobile version of the app to check their start time, find water stations on the map, and sign safety waivers. During and after the event, they use the app to track their personal progress and immediately see their final finish time and overall rank.
+
 ## 2. Technologies Used
 
 - **C#** – Programming language.
@@ -126,6 +130,14 @@ Unit tests help identify errors and verify that the tested functionality behaves
 - Confirm that controllers use the appropriate routing attributes.
 - Ensure that `builder.Services.AddControllers()` and `app.MapControllers()` are present in `Program.cs`.
 
-## 11. Conclusion
+## 11.ci/cd screenshots
+<img width="1365" height="565" alt="Screenshot 2026-10-16 034043" src="https://github.com/user-attachments/assets/cf0e1393-44cd-4224-939f-e014425edc52" />
+<img width="1350" height="422" alt="Screenshot 2026-10-16 034117" src="https://github.com/user-attachments/assets/8a91182e-6854-49b4-814e-456b2f62ed65" />
+
+## 12.YouTube Unlisted Link
+https://youtu.be/bwvw_3gtn18 
+
+
+## 13. Conclusion
 
 RaceDay API provides a foundation for developing and testing web API functionality using ASP.NET Core, Entity Framework Core, and SQL Server. Swagger simplifies API testing and documentation, while unit tests help verify the application's functionality.
