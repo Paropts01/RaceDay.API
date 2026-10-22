@@ -1,8 +1,54 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<RaceDay.MVC.Models.EventResponseDto>
+@{
+    ViewData["Title"] = "Upcoming Events";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="mb-4">Upcoming Events</h1>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-3">
+        <select name="type" class="form-select">
+            <option value="">All types</option>
+            <option value="Run">Run</option>
+            <option value="Walk">Walk</option>
+            <option value="Cycle">Cycle</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="date" class="form-control"
+               value="@ViewBag.Date" />
+    </div>
+    <div class="col-md-3">
+        <input name="location" class="form-control"
+               placeholder="Location" value="@ViewBag.Location" />
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary w-100">Filter</button>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var ev in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                @if (!string.IsNullOrEmpty(ev.BannerImageURL))
+                {
+                    <img src="@ev.BannerImageURL" class="card-img-top"
+                         style="height:180px;object-fit:cover;" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@ev.Name</h5>
+                    <p class="text-muted mb-1">@ev.EventDate.ToString("dd MMM yyyy")</p>
+                    <p class="mb-1">@ev.Location • @ev.Distance km</p>
+                    <span class="badge bg-primary">@ev.EventType</span>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-outline-primary w-100"
+                       asp-controller="Events" asp-action="Details"
+                       asp-route-id="@ev.EventID">View Event</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>
