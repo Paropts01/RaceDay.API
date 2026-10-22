@@ -1,0 +1,36 @@
+﻿@model List<RaceDay.MVC.Models.EventResponseDto>
+
+<h1>Organiser Dashboard</h1>
+<p>Welcome, @ViewBag.OrganiserName</p>
+
+<a class="btn btn-primary mb-3"
+   asp-controller="Organiser" asp-action="CreateEvent">Create Event</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ev in Model)
+        {
+            <tr>
+                <td>@ev.Name</td>
+                <td>@ev.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@ev.Location</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary"
+                       asp-action="Categories" asp-route-eventId="@ev.EventID">Categories</a>
+                    <a class="btn btn-sm btn-outline-secondary"
+                       asp-action="Enrolments" asp-route-eventId="@ev.EventID">Enrolments</a>
+                    <a class="btn btn-sm btn-outline-success"
+                       asp-action="Results" asp-route-eventId="@ev.EventID">Results</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
