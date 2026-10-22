@@ -1,0 +1,29 @@
+﻿@model List<RaceDay.MVC.Models.MyEnrolmentDto>
+
+<h1>My Events</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Bib</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.Event</td>
+                <td>@e.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@e.Category</td>
+                <td><span class="badge status-@e.Status.ToLower()">@e.Status</span></td>
+                <td>@e.PaymentStatus</td>
+                <td>@e.BibNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
