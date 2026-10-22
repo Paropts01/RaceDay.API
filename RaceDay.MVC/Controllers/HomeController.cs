@@ -1,25 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
+using RaceDay.MVC.Attributes;
 using RaceDay.MVC.Models;
-using System.Diagnostics;
+using RaceDay.MVC.Services;
 
-namespace RaceDay.MVC.Controllers
+namespace RaceDay.MVC.Controllers;
+
+[SessionRequired]
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ApiClient _api;
+
+    public HomeController(ApiClient api) => _api = api;
+
+    public async Task<IActionResult> Index(
+        string? type, DateTime? date, string? location)
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        var url = "api/events";
+        var query = new List<string>();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        if (!string.IsNullOrWhiteSpace(type))
+            query.Add($"type={Uri.EscapeDataString(type)}");
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        if (date.HasValue)
+            query.Add($"date={date.Value:yyyy-MM-dd}");
+
+        if (!string.IsNullOrWhiteSpace(location))
+            query.Add($"location={Uri.EscapeDataString(location)}");
+
+        if (query.Any())
+            url += "?" + string.Join("&", query);
+
+        var events = await _api.GetJsonAsync<List<EventResponseDto>>(url)
+                     ?? new List<EventResponseDto>();
+
+        ViewBag.Type = type;
+        ViewBag.Date = date?.ToString("yyyy-MM-dd");
+        ViewBag.Location = location;
+
+        return View(events);
     }
 }
