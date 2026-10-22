@@ -1,1 +1,77 @@
-﻿
+﻿@model RaceDay.MVC.Models.ProfileResponseDto
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Profile</h2>
+
+    <div class="row">
+        <!-- Profile Picture & Info -->
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center mb-4">
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.Participant?.ProfilePictureURL))
+                    {
+                        <img src="@Model.Participant.ProfilePictureURL" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #0d6efd;" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px; color: white; font-size: 3rem;">
+                            @Model.FirstName[0]@Model.LastName[0]
+                        </div>
+                    }
+                    <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+                    <p class="text-muted mb-1">@Model.Email</p>
+                    <span class="badge bg-primary">@Model.Role</span>
+
+                    <hr />
+
+                    <!-- Profile Picture Upload Form -->
+                    <form asp-action="UploadProfilePicture" method="post" enctype="multipart/form-data">
+                        <label class="form-label fw-bold">Upload New Picture</label>
+                        <input name="picture" type="file" accept="image/*" class="form-control mb-2" required />
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Personal Info -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">Edit Personal Information</div>
+                <div class="card-body">
+                    <form asp-action="UpdateProfile" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input name="firstName" class="form-control" value="@Model.FirstName" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input name="lastName" class="form-control" value="@Model.LastName" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input name="email" type="email" class="form-control" value="@Model.Email" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input name="phoneNumber" class="form-control" value="@Model.PhoneNumber" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Date of Birth</label>
+                                <input name="dateOfBirth" type="date" class="form-control" value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" required />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

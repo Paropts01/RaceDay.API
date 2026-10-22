@@ -56,3 +56,19 @@ public record ResultListItemDto(
     int? CategoryPlacement, string Status, bool IsPublished);
 
 public record UploadResponse(string Url);
+
+public record EventCreateDto(
+    string Name, string? Description, DateTime EventDate,
+    string Location, decimal Distance, string EventType,
+    string? BannerImageURL, int? MaxParticipants,
+    DateTime? RegistrationDeadline);
+
+public record CategoryCreateDto(
+    string Name, string? Description, string? CategoryType,
+    int? MinAge, int? MaxAge, decimal? Distance,
+    decimal? EntryFee, int? Capacity);
+
+public record ResultCreateDto(
+    int EnrolmentId, TimeSpan? FinishTime, TimeSpan? NetTime,
+    int? FinishingPosition, int? OverallPlacement,
+    int? CategoryPlacement, string Status, string? Notes);

@@ -1,6 +1,92 @@
-﻿namespace RaceDay.MVC.Views.Organiser
-{
-    public class Results
-    {
-    }
+﻿@model List<RaceDay.MVC.Models.ResultListItemDto>
+
+@{
+    ViewData["Title"] = "Manage Results";
+    var eventId = ViewBag.EventId;
 }
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Event Results</h2>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Participant</th>
+                                <th>Finish Time</th>
+                                <th>Position</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count == 0)
+                            {
+                                <tr><td colspan="4" class="text-center py-4">No results captured yet.</td></tr>
+                            }
+                            @foreach (var res in Model)
+                            {
+                                <tr>
+                                    <td>@res.ParticipantName</td>
+                                    <td>@res.FinishTime</td>
+                                    <td>@res.FinishingPosition</td>
+                                    <td>
+                                        <span class="badge bg-secondary">@res.Status</span>
+                                        @if (res.IsPublished)
+                                        {
+                                            <span class="badge bg-success">Published</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capture Result Form -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-success">
+                <div class="card-header bg-success text-white">Capture New Result</div>
+                <div class="card-body">
+                    <form asp-action="CreateResult" asp-route-eventId="@eventId" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Enrolment ID</label>
+                            <input name="EnrolmentId" type="number" class="form-control" required />
+                            <small class="text-muted">You can find this on the Enrolments page.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Finish Time</label>
+                            <input name="FinishTime" type="time" step="1" class="form-control" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Overall Pos</label>
+                                <input name="OverallPlacement" type="number" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Category Pos</label>
+                                <input name="CategoryPlacement" type="number" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Status</label>
+                            <select name="Status" class="form-select" required>
+                                <option value="Finished">Finished</option>
+                                <option value="DNF">DNF (Did Not Finish)</option>
+                                <option value="DQ">DQ (Disqualified)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Save Result</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
