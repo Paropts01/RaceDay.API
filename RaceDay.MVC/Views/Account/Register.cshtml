@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-7">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Create an Account</h2>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+
+                <form asp-action="Register" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input name="firstName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input name="lastName" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Username</label>
+                            <input name="username" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input name="email" type="email" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input name="password" type="password" class="form-control" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date of Birth</label>
+                            <input name="dateOfBirth" type="date" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input name="phoneNumber" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">I am registering as a:</label>
+                        <select name="role" class="form-select" required>
+                            <option value="Participant">Participant (Enter events)</option>
+                            <option value="Organiser">Organiser (Create events)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a asp-action="Login">Already have an account? Login here.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

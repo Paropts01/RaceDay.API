@@ -1,0 +1,47 @@
+﻿@model List<RaceDay.MVC.Models.MyResultDto>
+
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Race History</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Finish Time</th>
+                        <th>Overall Pos</th>
+                        <th>Category Pos</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr><td colspan="7" class="text-center py-4">You haven't completed any events yet.</td></tr>
+                    }
+                    @foreach (var res in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@res.Event</td>
+                            <td>@res.EventDate.ToString("dd MMM yyyy")</td>
+                            <td>@res.Category</td>
+                            <td class="fw-bold text-primary">@res.FinishTime</td>
+                            <td>@res.OverallPlacement</td>
+                            <td>@res.CategoryPlacement</td>
+                            <td>
+                                <span class="badge bg-info text-dark">@res.Status</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

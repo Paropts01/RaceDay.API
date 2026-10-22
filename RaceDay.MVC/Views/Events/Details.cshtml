@@ -1,0 +1,48 @@
+﻿@model RaceDay.MVC.Models.EventResponseDto
+@{
+    var categories =
+        ViewBag.Categories as List<RaceDay.MVC.Models.CategoryResponseDto>
+        ?? new List<RaceDay.MVC.Models.CategoryResponseDto>();
+    var role = Context.Session.GetString("Role");
+}
+
+<h1>@Model.Name</h1>
+<p>@Model.Description</p>
+<p><strong>Date:</strong> @Model.EventDate.ToString("dd MMM yyyy")</p>
+<p><strong>Location:</strong> @Model.Location</p>
+<p><strong>Distance:</strong> @Model.Distance km</p>
+<p><strong>Type:</strong> @Model.EventType</p>
+
+@if (!string.IsNullOrEmpty(Model.BannerImageURL))
+{
+    <img src="@Model.BannerImageURL" class="img-fluid rounded mb-3"
+         style="max-height:360px;object-fit:cover;" />
+}
+
+<h3>Categories</h3>
+<ul class="list-group mb-4">
+    @foreach (var c in categories)
+    {
+        <li class="list-group-item d-flex justify-content-between">
+            <span>@c.Name</span>
+            <span>@(c.EntryFee.HasValue ? $"R{c.EntryFee}" : "Free")</span>
+        </li>
+    }
+</ul>
+
+@if (role == "Participant")
+{
+    <form asp-controller="Events" asp-action="Enrol"
+          asp-route-eventId="@Model.EventID" method="post">
+        <div class="mb-2">
+            <label class="form-label">Select category</label>
+            <select name="categoryId" class="form-select" required>
+                @foreach (var c in categories)
+                {
+                    <option value="@c.CategoryID">@c.Name</option>
+                }
+            </select>
+        </div>
+        <button class="btn btn-success">Enter Event</button>
+    </form>
+}

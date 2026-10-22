@@ -1,0 +1,69 @@
+﻿@{
+    var role = Context.Session.GetString("Role");
+    var userName = Context.Session.GetString("UserName");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RaceDay</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+            🏁 RaceDay
+        </a>
+
+        <div class="navbar-nav ms-auto">
+            @if (role == "Organiser")
+            {
+                <a class="nav-link" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a>
+                <a class="nav-link" asp-controller="Organiser" asp-action="CreateEvent">Create Event</a>
+            }
+            else if (role == "Participant")
+            {
+                <a class="nav-link" asp-controller="Home" asp-action="Index">Events</a>
+                <a class="nav-link" asp-controller="Participant" asp-action="MyEvents">My Events</a>
+                <a class="nav-link" asp-controller="Participant" asp-action="MyResults">My Results</a>
+                <a class="nav-link" asp-controller="Participant" asp-action="Profile">Profile</a>
+            }
+
+            @if (!string.IsNullOrEmpty(userName))
+            {
+                <span class="navbar-text ms-3">@userName (@role)</span>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button class="btn btn-sm btn-outline-light ms-2">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+            }
+        </div>
+    </div>
+</nav>
+
+<main class="container mt-4">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @RenderBody()
+</main>
+
+<footer class="text-center text-muted py-4">
+    RaceDay – South African road running, walking and cycling events
+</footer>
+</body>
+</html>
