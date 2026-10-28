@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  raceday-api:
+    build:
+      context: .
+      dockerfile: RaceDay.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=RaceDayDB;User Id=sa;Password=Rosebank  10476273;TrustServerCertificate=True;
+      # PASTE YOUR ACTUAL AZURE STRING BELOW:
+      - AzureBlob__ConnectionString=DefaultEndpointsProtocol=https;AccountName=YOURACCOUNT;AccountKey=YOURKEY;EndpointSuffix=core.windows.net
+      - AzureBlob__ContainerName=raceday
+    ports:
+      - "5254:8080"
+
+  raceday-mvc:
+    build:
+      context: .
+      dockerfile: RaceDay.MVC/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ApiBaseUrl=http://raceday-api:8080/
+    ports:
+      - "5000:8080"
+    depends_on:
+      - raceday-api
