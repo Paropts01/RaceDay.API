@@ -15,10 +15,15 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
+// Configure the API address.
+// Visual Studio uses localhost:5254.
+// Docker Compose overrides this with raceday-api:8080.
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"]
+                 ?? "http://localhost:5254/";
+
 builder.Services.AddHttpClient<ApiClient>(client =>
 {
-    client.BaseAddress = new Uri(
-        builder.Configuration["ApiBaseUrl"] ?? "http://localhost:5254/");
+    client.BaseAddress = new Uri(apiBaseUrl);
 });
 
 var app = builder.Build();
@@ -30,7 +35,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseSession();
 
 app.MapControllerRoute(

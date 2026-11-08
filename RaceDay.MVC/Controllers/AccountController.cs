@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
 using RaceDay.MVC.Models;
 using RaceDay.MVC.Services;
 
@@ -8,13 +11,24 @@ public class AccountController : Controller
 {
     private readonly ApiClient _api;
 
-    public AccountController(ApiClient api) => _api = api;
+    public AccountController(ApiClient api)
+    {
+        _api = api;
+    }
 
+    // Display Login page
     [HttpGet]
-    public IActionResult Login() => View();
+    public IActionResult Login()
+    {
+        return View();
+    }
 
+    // Process Login
     [HttpPost]
-    public async Task<IActionResult> Login(string usernameOrEmail, string password)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(
+        string usernameOrEmail,
+        string password)
     {
         var response = await _api.PostJsonAsync("api/auth/login", new
         {
@@ -30,21 +44,39 @@ public class AccountController : Controller
 
         var user = await response.Content.ReadFromJsonAsync<UserResponseDto>();
 
-        HttpContext.Session.SetInt32("UserID", user!.UserID);
+        if (user == null)
+        {
+            ViewBag.Error = "Unable to retrieve your account details. Please try again.";
+            return View();
+        }
+
+        // Store logged-in user's details in the session
+        HttpContext.Session.SetInt32("UserID", user.UserID);
         HttpContext.Session.SetString("Role", user.Role);
         HttpContext.Session.SetString("UserName", user.FirstName);
 
         return RedirectToAction("Index", "Home");
     }
 
+    // Display Register page
     [HttpGet]
-    public IActionResult Register() => View();
+    public IActionResult Register()
+    {
+        return View();
+    }
 
+    // Process Registration
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(
-        string username, string email, string password,
-        string firstName, string lastName, DateTime dateOfBirth,
-        string? phoneNumber, string role)
+        string username,
+        string email,
+        string password,
+        string firstName,
+        string lastName,
+        DateTime dateOfBirth,
+        string? phoneNumber,
+        string role)
     {
         var response = await _api.PostJsonAsync("api/auth/register", new
         {
@@ -66,19 +98,29 @@ public class AccountController : Controller
 
         var user = await response.Content.ReadFromJsonAsync<UserResponseDto>();
 
-        HttpContext.Session.SetInt32("UserID", user!.UserID);
+        if (user == null)
+        {
+            ViewBag.Error = "Registration succeeded, but account details could not be retrieved.";
+            return View();
+        }
+
+        // Store newly registered user's details in the session
+        HttpContext.Session.SetInt32("UserID", user.UserID);
         HttpContext.Session.SetString("Role", user.Role);
         HttpContext.Session.SetString("UserName", user.FirstName);
 
         return RedirectToAction("Index", "Home");
     }
 
+    // Log out the current user
     [HttpPost]
-    public async Task<IActionResult> Logout()
+    [ValidateAntiForgeryToken]
+    public IActionResult Logout()
     {
-        await _api.PostJsonAsync("api/auth/logout", new { });
+        // Clear the user's session
         HttpContext.Session.Clear();
 
-        return RedirectToAction("Login");
+        // Redirect to the Login page
+        return RedirectToAction("Login", "Account");
     }
 }

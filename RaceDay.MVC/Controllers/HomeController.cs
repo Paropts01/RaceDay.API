@@ -39,4 +39,10 @@ public class HomeController : Controller
 
         return View(events);
     }
+
+    // About Us page
+    public IActionResult About()
+    {
+        return View();
+    }
 }

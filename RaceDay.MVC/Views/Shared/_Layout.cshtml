@@ -1,71 +1,216 @@
-﻿@{
-    var role = Context.Session.GetString("Role");
+﻿
+@{
+    var userRole = Context.Session.GetString("Role");
     var userName = Context.Session.GetString("UserName");
+    var userId = Context.Session.GetInt32("UserID");
+
+    var isLoggedIn = userId.HasValue;
 }
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - RaceDay</title>
+
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                <!-- RaceDay Brand Logo -->
-                <img src="~/images.png" alt="RaceDay Logo" height="30" class="d-inline-block align-top me-2" />
-                RaceDay
-            </a>
 
-            <div class="navbar-nav ms-auto">
-                @if (role == "Organiser")
-                {
-                    <a class="nav-link" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a>
-                    <a class="nav-link" asp-controller="Organiser" asp-action="CreateEvent">Create Event</a>
-                }
-                else if (role == "Participant")
-                {
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">Events</a>
-                    <a class="nav-link" asp-controller="Participant" asp-action="MyEvents">My Events</a>
-                    <a class="nav-link" asp-controller="Participant" asp-action="MyResults">My Results</a>
-                    <a class="nav-link" asp-controller="Participant" asp-action="Profile">Profile</a>
-                }
+    @if (isLoggedIn)
+    {
+        <!-- Navigation Bar -->
+        <header>
+            <nav class="navbar navbar-expand-lg raceday-navbar">
+                <div class="container-fluid">
 
-                @if (!string.IsNullOrEmpty(userName))
-                {
-                    <span class="navbar-text ms-3">@userName (@role)</span>
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                        <button class="btn btn-sm btn-outline-light ms-2">Logout</button>
-                    </form>
-                }
-                else
-                {
-                    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                    <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-                }
-            </div>
-        </div>
-    </nav>
+                    <!-- RaceDay Logo -->
+                    <a class="navbar-brand d-flex align-items-center"
+                       asp-controller="Home"
+                       asp-action="Index">
 
-    <main class="container mt-4">
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success">@TempData["Success"]</div>
-        }
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger">@TempData["Error"]</div>
-        }
+                        <img src="~/images.png"
+                             alt="RaceDay Logo"
+                             class="img-fluid"
+                             style="max-height: 110px;" />
+                    </a>
 
+                    <!-- Mobile Menu Button -->
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#mainNavbar"
+                            aria-controls="mainNavbar"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="mainNavbar">
+
+                        <!-- Navigation Links -->
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                            <!-- Home -->
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Home"
+                                   asp-action="Index">
+
+                                    <i class="bi bi-house-door-fill"></i>
+                                    Home
+                                </a>
+                            </li>
+
+                            <!-- About Us -->
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Home"
+                                   asp-action="About">
+
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    About Us
+                                </a>
+                            </li>
+
+                            <!-- Organiser Links -->
+                            @if (userRole == "Organiser")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Organiser"
+                                       asp-action="Dashboard">
+
+                                        <i class="bi bi-speedometer2"></i>
+                                        Dashboard
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Organiser"
+                                       asp-action="CreateEvent">
+
+                                        <i class="bi bi-calendar-plus-fill"></i>
+                                        Create Event
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- Participant Links -->
+                            @if (userRole == "Participant")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Participant"
+                                       asp-action="MyEvents">
+
+                                        <i class="bi bi-calendar-event-fill"></i>
+                                        My Events
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Participant"
+                                       asp-action="MyResults">
+
+                                        <i class="bi bi-trophy-fill"></i>
+                                        My Results
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Participant"
+                                       asp-action="Profile">
+
+                                        <i class="bi bi-person-circle"></i>
+                                        Profile
+                                    </a>
+                                </li>
+                            }
+
+                        </ul>
+
+                        <!-- User Account Links -->
+                        <ul class="navbar-nav align-items-lg-center">
+
+                            <!-- Welcome User -->
+                            <li class="nav-item">
+                                <span class="nav-link user-welcome">
+
+                                    <i class="bi bi-person-fill"></i>
+                                    Welcome, @userName
+
+                                </span>
+                            </li>
+
+                            <!-- Logout -->
+                            <li class="nav-item">
+                                <form asp-controller="Account"
+                                      asp-action="Logout"
+                                      method="post"
+                                      class="d-inline">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit" class="nav-action-btn">
+
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout
+
+                                    </button>
+
+                                </form>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+        </header>
+    }
+
+    <!-- Main Page Content -->
+    <main role="main" class="raceday-main">
         @RenderBody()
     </main>
 
-    <footer class="text-center text-muted py-4">
-        RaceDay – South African road running, walking and cycling events
+    <!-- Footer -->
+    <footer class="raceday-footer">
+        <div class="container text-center">
+            <p class="mb-2">
+                &copy; @DateTime.Now.Year - RaceDay.
+                Bringing runners and organisers together.
+            </p>
+        </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
+

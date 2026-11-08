@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using RaceDay.MVC.Attributes;
 using RaceDay.MVC.Models;
 using RaceDay.MVC.Services;
@@ -11,17 +12,22 @@ public class OrganiserController : Controller
 {
     private readonly ApiClient _api;
 
-    public OrganiserController(ApiClient api) => _api = api;
+    public OrganiserController(ApiClient api)
+    {
+        _api = api;
+    }
 
     public async Task<IActionResult> Dashboard()
     {
-        var profile = await _api.GetJsonAsync<ProfileResponseDto>("api/profile");
+        var profile = await _api.GetJsonAsync<ProfileResponseDto>(
+            "api/profile");
 
-        var events = await _api.GetJsonAsync<List<EventResponseDto>>("api/events")
-                     ?? new List<EventResponseDto>();
+        var events = await _api.GetJsonAsync<List<EventResponseDto>>(
+            "api/events")
+            ?? new List<EventResponseDto>();
 
         var myEvents = events
-            .Where(e => e.OrganiserID == profile!.Organiser!.OrganiserID)
+            .Where(e => e.OrganiserID == profile?.Organiser?.OrganiserID)
             .ToList();
 
         ViewBag.OrganiserName =
@@ -31,36 +37,82 @@ public class OrganiserController : Controller
     }
 
     [HttpGet]
-    public IActionResult CreateEvent() => View();
+    public IActionResult CreateEvent()
+    {
+        var model = new EventCreateDto(
+            "",
+            null,
+            DateTime.Today,
+            "",
+            0m,
+            "Run",
+            null,
+            null,
+            null
+        );
+
+        return View(model);
+    }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateEvent(
-        EventCreateDto dto, IFormFile? banner)
+        EventCreateDto dto,
+        IFormFile? banner)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(dto);
+        }
+
+        // Upload the selected banner through the API.
         if (banner != null && banner.Length > 0)
         {
             var upload = await _api.UploadAsync(
-                "api/files/event-banner", banner);
+                "api/files/event-banner",
+                banner);
 
             if (!upload.IsSuccessStatusCode)
             {
-                ViewBag.Error = await upload.Content.ReadAsStringAsync();
+                ViewBag.Error =
+                    await upload.Content.ReadAsStringAsync();
+
                 return View(dto);
             }
 
             var uploadResult =
                 await upload.Content.ReadFromJsonAsync<UploadResponse>();
 
-            dto = dto with { BannerImageURL = uploadResult!.Url };
+            if (uploadResult == null ||
+                string.IsNullOrWhiteSpace(uploadResult.Url))
+            {
+                ViewBag.Error =
+                    "The API did not return a valid image URL.";
+
+                return View(dto);
+            }
+
+            // Store the Azure image URL in the event DTO.
+            dto = dto with
+            {
+                BannerImageURL = uploadResult.Url
+            };
         }
 
-        var response = await _api.PostJsonAsync("api/events", dto);
+        // Send the event information and Azure image URL to the API.
+        var response = await _api.PostJsonAsync(
+            "api/events",
+            dto);
 
         if (!response.IsSuccessStatusCode)
         {
-            ViewBag.Error = await response.Content.ReadAsStringAsync();
+            ViewBag.Error =
+                await response.Content.ReadAsStringAsync();
+
             return View(dto);
         }
+
+        TempData["Success"] = "Event created successfully.";
 
         return RedirectToAction(nameof(Dashboard));
     }
@@ -73,22 +125,28 @@ public class OrganiserController : Controller
             ?? new List<CategoryResponseDto>();
 
         ViewBag.EventId = eventId;
+
         return View(categories);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateCategory(
-        int eventId, CategoryCreateDto dto)
+        int eventId,
+        CategoryCreateDto dto)
     {
         var response = await _api.PostJsonAsync(
-            $"api/events/{eventId}/categories", dto);
+            $"api/events/{eventId}/categories",
+            dto);
 
         if (!response.IsSuccessStatusCode)
         {
-            TempData["Error"] = await response.Content.ReadAsStringAsync();
+            TempData["Error"] =
+                await response.Content.ReadAsStringAsync();
         }
 
-        return RedirectToAction(nameof(Categories), new { eventId });
+        return RedirectToAction(
+            nameof(Categories),
+            new { eventId });
     }
 
     public async Task<IActionResult> Enrolments(int eventId)
@@ -99,6 +157,7 @@ public class OrganiserController : Controller
             ?? new List<EventEnrolmentListItemDto>();
 
         ViewBag.EventId = eventId;
+
         return View(enrolments);
     }
 
@@ -110,37 +169,27 @@ public class OrganiserController : Controller
             ?? new List<ResultListItemDto>();
 
         ViewBag.EventId = eventId;
+
         return View(results);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateResult(
-        int eventId, ResultCreateDto dto)
+        int eventId,
+        ResultCreateDto dto)
     {
         var response = await _api.PostJsonAsync(
-            $"api/events/{eventId}/results", dto);
+            $"api/events/{eventId}/results",
+            dto);
 
         if (!response.IsSuccessStatusCode)
         {
-            TempData["Error"] = await response.Content.ReadAsStringAsync();
+            TempData["Error"] =
+                await response.Content.ReadAsStringAsync();
         }
 
-        return RedirectToAction(nameof(Results), new { eventId });
+        return RedirectToAction(
+            nameof(Results),
+            new { eventId });
     }
 }
-
-public record EventCreateDto(
-    string Name, string? Description, DateTime EventDate,
-    string Location, decimal Distance, string EventType,
-    string? BannerImageURL, int? MaxParticipants,
-    DateTime? RegistrationDeadline);
-
-public record CategoryCreateDto(
-    string Name, string? Description, string? CategoryType,
-    int? MinAge, int? MaxAge, decimal? Distance,
-    decimal? EntryFee, int? Capacity);
-
-public record ResultCreateDto(
-    int EnrolmentId, TimeSpan? FinishTime, TimeSpan? NetTime,
-    int? FinishingPosition, int? OverallPlacement,
-    int? CategoryPlacement, string Status, string? Notes);
