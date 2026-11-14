@@ -1,0 +1,980 @@
+
+/* =========================================
+   RACEDAY - BLUE AND WHITE THEME
+========================================= */
+
+:root {
+    --primary-blue: #2563EB;
+    --dark-blue: #173B70;
+    --medium-blue: #60A5FA;
+    --pastel-blue: #DBEAFE;
+    --light-blue: #EFF6FF;
+    --white: #FFFFFF;
+    --text-color: #475569;
+    --border-color: #E2E8F0;
+    --shadow: 0 8px 25px rgba(37, 99, 235, 0.08);
+}
+
+html {
+    font-size: 16px;
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text-color);
+    background-color: #FFFFFF;
+    background-image: linear-gradient( to right, #FFFFFF 0%, #FFFFFF 48%, #F5F9FF 75%, #DBEAFE 100% );
+    background-attachment: fixed;
+}
+
+/* =========================================
+   NAVIGATION BAR
+========================================= */
+
+.raceday-navbar {
+    background-color: var(--white);
+    padding: 14px 0;
+    margin: 0;
+    width: 100%;
+    box-shadow: 0 3px 18px rgba(23, 59, 112, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+    .raceday-navbar .navbar-brand {
+        color: var(--dark-blue);
+        font-size: 25px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+        .raceday-navbar .navbar-brand:hover {
+            color: var(--primary-blue);
+        }
+
+.raceday-logo {
+    height: 43px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.brand-name {
+    color: var(--dark-blue);
+}
+
+.raceday-navbar .nav-link {
+    color: var(--dark-blue);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 13px !important;
+    margin: 0 3px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+
+    .raceday-navbar .nav-link i {
+        color: var(--primary-blue);
+        margin-right: 5px;
+    }
+
+    .raceday-navbar .nav-link:hover {
+        color: var(--primary-blue);
+        background-color: var(--light-blue);
+    }
+
+.raceday-navbar .navbar-toggler {
+    border: 1px solid var(--pastel-blue);
+    border-radius: 10px;
+}
+
+.user-welcome {
+    color: var(--dark-blue);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 12px;
+}
+
+    .user-welcome i {
+        color: var(--primary-blue);
+        margin-right: 5px;
+    }
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.btn {
+    border-radius: 12px;
+    padding: 10px 19px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background-color: var(--dark-blue);
+        border-color: var(--dark-blue);
+        transform: translateY(-2px);
+    }
+
+.btn-outline-primary {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+        color: white;
+    }
+
+.nav-action-btn {
+    border-radius: 30px;
+    margin-left: 10px;
+}
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.raceday-main {
+    flex: 1;
+    padding: 15px;
+    margin: 0 15px;
+}
+
+/* =========================================
+   HEADINGS AND TEXT
+========================================= */
+
+h1, h2, h3, h4, h5 {
+    color: var(--dark-blue);
+    font-weight: 700;
+}
+
+h1 {
+    letter-spacing: -0.7px;
+}
+
+p {
+    line-height: 1.7;
+}
+
+/* =========================================
+   CARDS
+========================================= */
+
+.card {
+    background-color: var(--white);
+    border: 1px solid rgba(219, 234, 254, 0.9);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.13);
+    }
+
+.card-header {
+    background-color: var(--light-blue);
+    color: var(--dark-blue);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 700;
+    padding: 17px 20px;
+}
+
+.card-body {
+    padding: 22px;
+}
+
+/* =========================================
+   FORMS
+========================================= */
+
+.form-control,
+.form-select {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 11px 14px;
+    background-color: white;
+    color: var(--text-color);
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--medium-blue);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+.form-label {
+    color: var(--dark-blue);
+    font-weight: 600;
+}
+
+/* =========================================
+   TABLES AND LISTS
+========================================= */
+
+.table {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+    .table thead th {
+        background-color: var(--light-blue);
+        color: var(--dark-blue);
+        font-weight: 700;
+        border-bottom: 2px solid var(--pastel-blue);
+    }
+
+    .table tbody tr:hover {
+        background-color: #F8FBFF;
+    }
+
+.list-group-item {
+    border-color: var(--border-color);
+    padding: 15px 18px;
+}
+
+/* =========================================
+   EVENT IMAGES
+========================================= */
+
+.event-banner,
+.card-img-top {
+    width: 100%;
+    object-fit: cover;
+}
+
+.event-banner {
+    max-height: 360px;
+    border-radius: 18px;
+}
+
+/* =========================================
+   ALERTS
+========================================= */
+
+.raceday-alert {
+    border: none;
+    border-radius: 14px;
+    padding: 15px 20px;
+}
+
+    .raceday-alert i {
+        margin-right: 8px;
+    }
+
+/* =========================================
+   STATUS LABELS
+========================================= */
+
+.status-confirmed {
+    background: #198754;
+    color: white;
+}
+
+.status-pending {
+    background: #ffc107;
+    color: #212529;
+}
+
+.status-cancelled {
+    background: #dc3545;
+    color: white;
+}
+
+.status-completed {
+    background: #0d6efd;
+    color: white;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.raceday-footer {
+    background-color: white;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 0 20px;
+    margin-top: auto;
+    color: var(--text-color);
+}
+
+.footer-brand {
+    color: var(--dark-blue);
+    font-size: 21px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+    .footer-brand i {
+        color: var(--primary-blue);
+    }
+
+.raceday-footer p {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.footer-icons {
+    color: var(--primary-blue);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.raceday-footer small {
+    color: #94A3B8;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 991px) {
+
+    .raceday-navbar .navbar-nav {
+        align-items: stretch !important;
+        padding-top: 15px;
+    }
+
+    .raceday-navbar .nav-link {
+        margin: 3px 0;
+    }
+
+    .nav-action-btn {
+        margin: 8px 0;
+    }
+
+    .user-welcome {
+        margin: 10px 0;
+    }
+
+    .raceday-main {
+        padding-top: 25px;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .raceday-logo {
+        height: 35px;
+        max-width: 90px;
+    }
+
+    .raceday-navbar .navbar-brand {
+        font-size: 21px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    .card-body {
+        padding: 17px;
+    }
+}
+
+/* Page headings */
+
+.dashboard-heading,
+.events-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.section-label {
+    color: #2563eb;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.page-title {
+    color: #173b70;
+    font-size: 2rem;
+    font-weight: 750;
+}
+
+.events-section-title {
+    color: #173b70;
+    font-weight: 700;
+}
+
+/* Dashboard statistic cards */
+
+.dashboard-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+    height: 100%;
+    background: linear-gradient(120deg, #ffffff, #eff6ff);
+    border: 1px solid #dbeafe;
+    border-radius: 20px;
+    box-shadow: 0 5px 18px rgba(37, 99, 235, 0.07);
+}
+
+.stat-icon,
+.table-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dbeafe;
+    color: #2563eb;
+    border-radius: 15px;
+    flex-shrink: 0;
+}
+
+.stat-icon {
+    width: 55px;
+    height: 55px;
+    font-size: 1.5rem;
+}
+
+.stat-label {
+    color: #64748b;
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+}
+
+.dashboard-stat-card h3 {
+    color: #173b70;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Content panels */
+
+.content-card,
+.filter-card {
+    background: #ffffff;
+    border: 1px solid #e0ecff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 6px 22px rgba(37, 99, 235, 0.06);
+}
+
+    .content-card h4,
+    .filter-heading {
+        color: #173b70;
+        font-weight: 700;
+    }
+
+/* Event count */
+
+.event-count {
+    display: inline-block;
+    color: #1d4ed8;
+    background: #dbeafe;
+    padding: 7px 14px;
+    border-radius: 30px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+/* Dashboard table */
+
+.raceday-table {
+    margin-bottom: 0;
+}
+
+    .raceday-table thead th {
+        background: #eff6ff;
+        color: #173b70;
+        border-bottom: 1px solid #dbeafe;
+        padding: 15px;
+        white-space: nowrap;
+    }
+
+    .raceday-table tbody td {
+        padding: 16px 15px;
+        color: #475569;
+    }
+
+    .raceday-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+.table-icon {
+    width: 38px;
+    height: 38px;
+}
+
+/* Event filters */
+
+.filter-card {
+    background: linear-gradient(120deg, #ffffff, #f0f7ff);
+}
+
+    .filter-card .form-label {
+        color: #173b70;
+        font-weight: 600;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select {
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+        padding: 11px 13px;
+    }
+
+        .filter-card .form-control:focus,
+        .filter-card .form-select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+.clear-filter-link {
+    color: #2563eb;
+    font-size: 0.88rem;
+    text-decoration: none;
+}
+
+    .clear-filter-link:hover {
+        color: #173b70;
+        text-decoration: underline;
+    }
+
+/* Event cards */
+
+.event-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #dbeafe;
+    border-radius: 20px;
+    box-shadow: 0 6px 22px rgba(37, 99, 235, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.14);
+    }
+
+.event-image-wrapper {
+    height: 190px;
+    overflow: hidden;
+    background: #dbeafe;
+}
+
+.event-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-image-placeholder {
+    height: 190px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #2563eb;
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    font-weight: 600;
+}
+
+    .event-image-placeholder i {
+        font-size: 2.5rem;
+    }
+
+.event-card-body {
+    padding: 22px;
+}
+
+.event-card-title {
+    color: #173b70;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.event-type-badge {
+    color: #1d4ed8;
+    background: #dbeafe;
+    border-radius: 30px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.event-date {
+    color: #64748b;
+    font-size: 0.78rem;
+}
+
+.event-detail {
+    color: #64748b;
+    margin-bottom: 9px;
+}
+
+    .event-detail i {
+        color: #2563eb;
+        margin-right: 7px;
+    }
+
+/* Empty states */
+
+.empty-state {
+    color: #64748b;
+}
+
+    .empty-state > i {
+        color: #60a5fa;
+        font-size: 3rem;
+    }
+
+    .empty-state h5 {
+        color: #173b70;
+        font-weight: 700;
+    }
+
+/* Buttons */
+
+.btn-primary {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+    .btn-primary:hover {
+        background-color: #173b70;
+        border-color: #173b70;
+    }
+
+.btn-outline-primary {
+    color: #2563eb;
+    border-color: #93c5fd;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #2563eb;
+        border-color: #2563eb;
+    }
+
+/* Responsive design */
+
+@media (max-width: 767px) {
+
+    .page-title {
+        font-size: 1.65rem;
+    }
+
+    .dashboard-heading {
+        align-items: flex-start;
+    }
+
+        .dashboard-heading .btn {
+            width: 100%;
+        }
+
+    .content-card,
+    .filter-card {
+        padding: 18px;
+    }
+
+    .event-image-wrapper,
+    .event-image-placeholder {
+        height: 170px;
+    }
+}
+
+/* Authentication pages */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient( 110deg, #ffffff 0%, #f0f7ff 55%, #dbeafe 100% );
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 550px;
+    margin: auto;
+    padding: 35px 20px;
+}
+
+.auth-footer {
+    text-align: center;
+    padding: 15px;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+    .auth-footer p {
+        margin-bottom: 4px;
+    }
+/* =========================================
+   BADGE BASE (colour-coded statuses)
+========================================= */
+
+.badge {
+    padding: 7px 12px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.2px;
+}
+
+/* Enrolment statuses */
+.status-confirmed {
+    background: #198754;
+    color: #fff;
+}
+
+.status-pending {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.status-cancelled {
+    background: #dc3545;
+    color: #fff;
+}
+
+.status-completed {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* Result statuses */
+.status-finished {
+    background: #198754;
+    color: #fff;
+}
+
+.status-dnf {
+    background: #64748b;
+    color: #fff;
+}
+
+.status-dq {
+    background: #dc3545;
+    color: #fff;
+}
+
+.status-published {
+    background: #0d6efd;
+    color: #fff;
+}
+
+/* Payment statuses */
+.payment-paid {
+    background: #198754;
+    color: #fff;
+}
+
+.payment-unpaid {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.payment-pending {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.payment-failed {
+    background: #dc3545;
+    color: #fff;
+}
+
+.payment-refunded {
+    background: #64748b;
+    color: #fff;
+}
+
+/* Auth pages – use the existing auth classes */
+.auth-card {
+    max-width: 520px;
+    margin: 60px auto;
+    padding: 0 15px;
+}
+/* HOME PAGE WELCOME BANNER */
+.home-welcome {
+    min-height: 430px;
+    display: flex;
+    align-items: center;
+    padding: 55px;
+    border-radius: 14px;
+    color: #ffc247;
+    background: linear-gradient( rgba(9, 28, 55, 0.75), rgba(9, 28, 55, 0.65) ), url('/images/marathon-banner.jpg') center/cover;
+}
+
+.home-welcome-content {
+    max-width: 680px;
+}
+
+.home-eyebrow {
+    color: #ffc247;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+
+.home-welcome h1,
+.about-hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 800;
+    margin: 15px 0;
+    color: #ffc247;
+}
+
+.home-welcome p,
+.about-hero p {
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: #ffc247;
+}
+
+/* INTRODUCTION */
+.home-introduction {
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+    .home-introduction h2,
+    .home-photo-section h2,
+    .about-gallery h2 {
+        color: #173b70;
+        font-weight: 750;
+    }
+
+    .home-introduction p {
+        line-height: 1.8;
+        color: #64748b;
+    }
+
+/* PHOTO GALLERIES */
+.home-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.home-photo-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    min-height: 230px;
+    background: #e8edf5;
+}
+
+    .home-photo-item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    .home-photo-item:hover img {
+        transform: scale(1.05);
+    }
+
+.home-photo-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    color: white;
+    font-weight: 700;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+}
+
+/* ABOUT PAGE */
+.about-hero {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    padding: 50px;
+    border-radius: 14px;
+    color: #ffc247;
+    background: linear-gradient( rgba(9, 28, 55, 0.75), rgba(9, 28, 55, 0.65) ), url('/images/marathon-banner.jpg') center/cover;
+}
+
+.about-information {
+    max-width: 1500px;
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.about-information-text h2 {
+    color: #173b70;
+    font-weight: 750;
+    margin-top: 25px;
+}
+
+.about-information-text p,
+.about-information-text li {
+    color: #64748b;
+    line-height: 1.8;
+}
+
+.about-information-text ul {
+    padding-left: 25px;
+}
+
+/* BOTTOM MESSAGE */
+.home-bottom {
+    background: #173b70;
+    color: white;
+    padding: 35px 20px;
+    border-radius: 12px;
+}
+
+    .home-bottom h2 {
+        font-weight: 750;
+    }
+
+    .home-bottom p {
+        margin-bottom: 0;
+    }
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+    .home-welcome,
+    .about-hero {
+        padding: 30px 22px;
+        min-height: 330px;
+    }
+
+    .home-photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-photo-item img {
+        height: 230px;
+    }
+}
+

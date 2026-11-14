@@ -1,0 +1,94 @@
+﻿@model List<RaceDay.MVC.Models.MyEnrolmentDto>
+
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<div class="dashboard-heading mb-4">
+    <div>
+        <span class="section-label">
+            <i class="bi bi-ticket-perforated"></i> MY RACEDAY
+        </span>
+        <h1 class="page-title mt-2">My Events</h1>
+        <p class="text-muted mb-0">
+            Everything you've entered — status, category, payment and bib number.
+        </p>
+    </div>
+    <a class="btn btn-primary rounded-pill px-4"
+       asp-controller="Home"
+       asp-action="Index">
+        <i class="bi bi-calendar-plus me-2"></i> Find Events
+    </a>
+</div>
+
+<div class="content-card">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state text-center py-5">
+            <i class="bi bi-ticket-perforated"></i>
+            <h5 class="mt-3">No events yet</h5>
+            <p class="text-muted">
+                You haven't entered any events. Browse upcoming events and enter one to get started.
+            </p>
+            <a class="btn btn-primary rounded-pill px-4"
+               asp-controller="Home" asp-action="Index">
+                <i class="bi bi-search me-2"></i> Browse Events
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table raceday-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Bib #</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="table-icon"><i class="bi bi-flag"></i></div>
+                                    <strong>@e.Event</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <i class="bi bi-calendar3 text-primary me-1"></i>
+                                @e.EventDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td>
+                                <i class="bi bi-tag text-primary me-1"></i>
+                                @e.Category
+                            </td>
+                            <td>
+                                <span class="badge status-@e.Status.ToLower()">@e.Status</span>
+                            </td>
+                            <td>
+                                <span class="badge payment-@e.PaymentStatus.ToLower()">@e.PaymentStatus</span>
+                            </td>
+                            <td>
+                               
+                                @if (!e.BibNumber.HasValue)
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                                else
+                                {
+                                    <strong>@e.BibNumber</strong>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,445 @@
+﻿@model List<RaceDay.MVC.Models.EventResponseDto>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- ===================================== -->
+<!-- WELCOME BANNER -->
+<!-- ===================================== -->
+
+<section class="home-welcome mb-5">
+    <div class="home-welcome-content">
+
+        <span class="home-eyebrow">WELCOME TO RACEDAY</span>
+
+        <h1>Every Step Counts.<br />Every Race Matters.</h1>
+
+        <p>
+            Welcome to RaceDay! Discover exciting running, walking and
+            cycling events, challenge yourself and celebrate every achievement.
+            Your next adventure starts here.
+        </p>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-warning rounded-pill px-4">
+            Explore Events
+            <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+
+        <a asp-controller="Home"
+           asp-action="About"
+           class="btn btn-outline-light rounded-pill px-4 ms-2">
+            About Us
+        </a>
+
+    </div>
+</section>
+
+
+<!-- ===================================== -->
+<!-- RACEDAY INTRODUCTION -->
+<!-- ===================================== -->
+
+<section class="home-introduction text-center mb-5">
+
+    <span class="section-label">BE PART OF THE EXPERIENCE</span>
+
+    <h2 class="mt-2">More Than Just a Race</h2>
+
+    <p>
+        RaceDay connects event organisers and participants through a shared
+        passion for movement, fitness and achievement. Whether you are
+        organising an event or taking part, we make your journey easier.
+    </p>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- MARATHON PHOTO GALLERY -->
+<!-- ===================================== -->
+
+<section class="home-photo-section mb-5">
+
+    <div class="text-center mb-4">
+
+        <h2>Experience the Excitement</h2>
+
+        <p class="text-muted">
+            From the starting line to the finish line, every moment matters.
+        </p>
+
+    </div>
+
+    <div class="home-photo-grid">
+
+        <div class="home-photo-item">
+
+            <img src="@Url.Content("~/images/marathon.jpg")"
+                 alt="Runners preparing for a marathon" />
+
+            <div class="home-photo-caption">
+                The Starting Line
+            </div>
+
+        </div>
+
+        <div class="home-photo-item">
+
+            <img src="@Url.Content("~/images/marathon_run.jpg")"
+                 alt="Participants running in a road race" />
+
+            <div class="home-photo-caption">
+                The Challenge
+            </div>
+
+        </div>
+
+        <div class="home-photo-item">
+
+            <img src="@Url.Content("~/images/cycling.jpg")"
+                 alt="Cyclists competing in a race" />
+
+            <div class="home-photo-caption">
+                The Challenge
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- UPCOMING EVENTS HEADING -->
+<!-- ===================================== -->
+
+<div class="events-heading mb-4">
+
+    <div>
+
+        <span class="section-label">
+            <i class="bi bi-flag"></i>
+            DISCOVER RACEDAY
+        </span>
+
+        <h1 class="page-title mt-2">
+            Upcoming Events
+        </h1>
+
+        <p class="text-muted mb-0">
+            Find your next running, walking or cycling event.
+            Discover new challenges and get involved.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- EVENT FILTERS -->
+<!-- ===================================== -->
+
+<div class="filter-card mb-4">
+
+    <div class="mb-3">
+
+        <h5 class="filter-heading">
+            <i class="bi bi-funnel me-2"></i>
+            Find Your Event
+        </h5>
+
+        <p class="text-muted small mb-0">
+            Filter events according to your preferences.
+        </p>
+
+    </div>
+
+    <form method="get" class="row g-3 align-items-end">
+
+        <!-- Event Type -->
+        <div class="col-md-3">
+
+            <label class="form-label">
+                <i class="bi bi-activity text-primary me-1"></i>
+                Event Type
+            </label>
+
+            <select name="type" class="form-select">
+
+                <option value=""
+                        selected="@(string.IsNullOrEmpty(ViewBag.Type) ? "selected" : null)">
+                    All types
+                </option>
+
+                <option value="Run"
+                        selected="@(ViewBag.Type == "Run" ? "selected" : null)">
+                    Run
+                </option>
+
+                <option value="Walk"
+                        selected="@(ViewBag.Type == "Walk" ? "selected" : null)">
+                    Walk
+                </option>
+
+                <option value="Cycle"
+                        selected="@(ViewBag.Type == "Cycle" ? "selected" : null)">
+                    Cycle
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Event Date -->
+        <div class="col-md-3">
+
+            <label class="form-label">
+                <i class="bi bi-calendar text-primary me-1"></i>
+                Event Date
+            </label>
+
+            <input type="date"
+                   name="date"
+                   class="form-control"
+                   value="@ViewBag.Date" />
+
+        </div>
+
+
+        <!-- Event Location -->
+        <div class="col-md-3">
+
+            <label class="form-label">
+                <i class="bi bi-geo-alt text-primary me-1"></i>
+                Location
+            </label>
+
+            <input name="location"
+                   class="form-control"
+                   placeholder="Search location"
+                   value="@ViewBag.Location" />
+
+        </div>
+
+
+        <!-- Search Button -->
+        <div class="col-md-3">
+
+            <button type="submit"
+                    class="btn btn-primary rounded-pill w-100">
+
+                <i class="bi bi-search me-2"></i>
+                Find Events
+
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- Clear Filters -->
+    <div class="mt-3">
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="clear-filter-link">
+
+            <i class="bi bi-arrow-counterclockwise me-1"></i>
+            Clear all filters
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- EVENT RESULTS HEADING -->
+<!-- ===================================== -->
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+
+    <div>
+
+        <h4 class="events-section-title mb-1">
+            Explore Events
+        </h4>
+
+        <p class="text-muted small mb-0">
+            Find an event and take part in the action.
+        </p>
+
+    </div>
+
+    <span class="event-count">
+        @(Model?.Count ?? 0) event(s) found
+    </span>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- EVENT CARDS -->
+<!-- ===================================== -->
+
+<div class="row g-4">
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="col-12">
+
+            <div class="content-card empty-state text-center py-5">
+
+                <i class="bi bi-calendar-x"></i>
+
+                <h5 class="mt-3">
+                    No events found
+                </h5>
+
+                <p class="text-muted">
+                    There are currently no events matching your search.
+                    Try changing your filters.
+                </p>
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="btn btn-outline-primary rounded-pill px-4">
+
+                    <i class="bi bi-arrow-counterclockwise me-2"></i>
+                    View All Events
+
+                </a>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        @foreach (var ev in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+
+                <div class="event-card h-100">
+
+                    <!-- Event Banner -->
+                    @if (!string.IsNullOrEmpty(ev.BannerImageURL))
+                    {
+                        <div class="event-image-wrapper">
+
+                            <img src="@ev.BannerImageURL"
+                                 class="event-image"
+                                 alt="@ev.Name banner" />
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="event-image-placeholder">
+
+                            <i class="bi bi-flag"></i>
+
+                            <span>RaceDay Event</span>
+
+                        </div>
+                    }
+
+
+                    <!-- Event Information -->
+                    <div class="event-card-body">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+
+                            <span class="event-type-badge">
+
+                                <i class="bi bi-activity me-1"></i>
+                                @ev.EventType
+
+                            </span>
+
+                            <span class="event-date">
+
+                                <i class="bi bi-calendar3 me-1"></i>
+                                @ev.EventDate.ToString("dd MMM yyyy")
+
+                            </span>
+
+                        </div>
+
+
+                        <h5 class="event-card-title">
+                            @ev.Name
+                        </h5>
+
+
+                        <div class="event-information">
+
+                            <p class="event-detail">
+
+                                <i class="bi bi-geo-alt"></i>
+                                @ev.Location
+
+                            </p>
+
+                            <p class="event-detail">
+
+                                <i class="bi bi-signpost-2"></i>
+                                @ev.Distance km
+
+                            </p>
+
+                        </div>
+
+
+                        <a class="btn btn-outline-primary rounded-pill w-100 mt-3"
+                           asp-controller="Events"
+                           asp-action="Details"
+                           asp-route-id="@ev.EventID">
+
+                            View Event
+                            <i class="bi bi-arrow-right ms-1"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    }
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- BOTTOM WELCOME MESSAGE -->
+<!-- ===================================== -->
+
+<section class="home-bottom text-center mt-5 mb-4">
+
+    <h2>Your Race. Your Journey. Your Achievement.</h2>
+
+    <p>
+        Join RaceDay and become part of a community that celebrates
+        movement, determination and achievement.
+    </p>
+
+    <a asp-controller="Home"
+       asp-action="About"
+       class="btn btn-warning rounded-pill px-4 mt-3">
+
+        Discover RaceDay
+        <i class="bi bi-arrow-right ms-2"></i>
+
+    </a>
+
+</section>

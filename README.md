@@ -134,10 +134,140 @@ Unit tests help identify errors and verify that the tested functionality behaves
 <img width="1365" height="565" alt="Screenshot 2026-10-16 034043" src="https://github.com/user-attachments/assets/cf0e1393-44cd-4224-939f-e014425edc52" />
 <img width="1350" height="422" alt="Screenshot 2026-10-16 034117" src="https://github.com/user-attachments/assets/8a91182e-6854-49b4-814e-456b2f62ed65" />
 
-## 12.YouTube Unlisted Link
-https://youtu.be/bwvw_3gtn18 
+## 12.YouTube Unlisted Link for part 3
+https://youtu.be/ghyq7RlVm7s
+
+## POE final part docker commands set up
+## Running RaceDay with Docker
+
+### Prerequirements
+
+Before running RaceDay, ensure that you have installed:
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- SQL Server
+- An Azure Storage Account with a container named `raceday`
+- Git (if cloning the repository)
+
+### 1. Clone the repository
+
+Clone the RaceDay repository and navigate to the project folder:
+
+```bash
+git clone https://github.com/Paropts01/RaceDay.API.git
+cd RaceDay.API
+```
+
+Switch to the MVC branch:
+
+```bash
+git checkout RaceDay.MVC
+```
+
+### 2. Configure environment variables
+
+Copy the example environment file:
+
+**Windows PowerShell:**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open the `.env` file and provide your own Azure Storage Account connection string and SQL Server connection string.
+
+```env
+AZURE_BLOB_CONNECTION_STRING=YOUR_AZURE_CONNECTION_STRING
+RACEDAY_SQL_CONNECTION_STRING=YOUR_SQL_CONNECTION_STRING
+```
+
+Do not upload your `.env` file or expose your credentials publicly.
+
+### 3. Build the Docker containers
+
+Make sure Docker Desktop is running. From the main RaceDay project folder, execute:
+
+```bash
+docker compose build
+```
+
+This builds the RaceDay API and MVC Docker images.
+
+### 4. Start the application
+
+Run:
+
+```bash
+docker compose up -d
+```
+
+Docker Compose starts both the API and MVC containers.
+
+### 5. Access the application
+
+Once the containers are running, access RaceDay using the following addresses:
+
+| Component | URL |
+|---|---|
+| RaceDay MVC Website | http://localhost:5000 |
+| RaceDay API | http://localhost:5254 |
+| API Swagger | http://localhost:5254/swagger |
+
+### 6. Check running containers
+
+To check whether both containers are running:
+
+```bash
+docker compose ps
+```
+
+To view application logs:
+
+```bash
+docker compose logs
+```
+
+To view logs for the API:
+
+```bash
+docker compose logs raceday-api
+```
+
+To view logs for the MVC application:
+
+```bash
+docker compose logs raceday-mvc
+```
+
+### 7. Stop the application
+
+To stop and remove the running containers:
+
+```bash
+docker compose down
+```
+
+### 8. Rebuild the application
+
+If changes are made to the source code or Docker configuration, rebuild and restart the containers:
+
+```bash
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+```
+
+### Important Notes
+
+- Both the RaceDay API and MVC application run in separate Docker containers.
+- The MVC application communicates with the API through the Docker Compose service name `raceday-api`.
+- SQL Server must be accessible from the Docker containers.
+- Azure Blob Storage is used for storing uploaded event banners and profile pictures.
+- The `.env` file contains private credentials and must never be committed to GitHub.
+- The `.env.example` file provides a template for configuring the required environment variables.
 
 
 ## 13. Conclusion
 
 RaceDay API provides a foundation for developing and testing web API functionality using ASP.NET Core, Entity Framework Core, and SQL Server. Swagger simplifies API testing and documentation, while unit tests help verify the application's functionality.
+

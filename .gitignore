@@ -361,3 +361,43 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+
+# Local environment variables and secrets
+.env
+.env.*
+
+# Keep an example configuration if you create one
+!.env.example
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Visual Studio local files
+.vs/
+
+# User-specific settings
+*.user
+*.suo
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Development secrets
+**/appsettings.Development.json
+**/secrets.json
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build files
+**/bin/
+**/obj/
+
+# Temporary files
+*.log
+*.tmp

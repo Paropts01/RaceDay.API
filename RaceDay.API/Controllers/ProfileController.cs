@@ -39,12 +39,14 @@ public class ProfileController : ControllerBase
             user.Role,
             Organiser = user.Organiser == null ? null : new
             {
+                user.Organiser.OrganiserID, // Added this for Part 3
                 user.Organiser.OrganisationName,
                 user.Organiser.Bio,
                 user.Organiser.WebsiteURL
             },
             Participant = user.Participant == null ? null : new
             {
+                user.Participant.ParticipantID, // Added this for Part 3
                 user.Participant.ProfilePictureURL,
                 user.Participant.EmergencyContactName,
                 user.Participant.EmergencyContactPhone,
@@ -68,7 +70,26 @@ public class ProfileController : ControllerBase
         await _db.SaveChangesAsync();
         return Ok("Profile updated.");
     }
+
+    // --- NEW METHOD FOR PART 3 ---
+    [HttpPut("picture")]
+    [RoleAuthorize("Participant")]
+    public async Task<IActionResult> UpdatePicture(ProfilePictureUpdateDto dto)
+    {
+        var participant = await _db.Participants
+            .FirstOrDefaultAsync(p => p.UserID == CurrentUserId);
+
+        if (participant == null)
+            return Forbid();
+
+        participant.ProfilePictureURL = dto.ProfilePictureURL;
+        await _db.SaveChangesAsync();
+
+        return Ok("Profile picture updated.");
+    }
 }
+
+// --- DTOs MUST BE OUTSIDE THE CLASS, AT THE BOTTOM OF THE FILE ---
 
 public record ProfileUpdateDto(
     string FirstName,
@@ -77,3 +98,5 @@ public record ProfileUpdateDto(
     string? PhoneNumber,
     DateTime DateOfBirth
 );
+
+public record ProfilePictureUpdateDto(string ProfilePictureURL);

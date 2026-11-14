@@ -31,7 +31,7 @@ public class Event
     public string EventType { get; set; } = null!; // Run | Walk | Cycle
 
     [MaxLength(500)]
-    public string? BannerImageURL { get; set; }
+    public string? BannerImageUrl { get; set; }
 
     public int? MaxParticipants { get; set; }
     public DateTime? RegistrationDeadline { get; set; }

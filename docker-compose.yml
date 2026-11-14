@@ -1,0 +1,27 @@
+
+services:
+  raceday-api:
+    build:
+      context: .
+      dockerfile: RaceDay.API/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__DefaultConnection: ${RACEDAY_SQL_CONNECTION_STRING}
+      AzureBlob__ConnectionString: ${AZURE_BLOB_CONNECTION_STRING}
+      AzureBlob__ContainerName: "raceday"
+    ports:
+      - "5254:8080"
+
+  raceday-mvc:
+    build:
+      context: .
+      dockerfile: RaceDay.MVC/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ApiBaseUrl: "http://raceday-api:8080/"
+    ports:
+      - "5000:8080"
+    depends_on:
+      - raceday-api

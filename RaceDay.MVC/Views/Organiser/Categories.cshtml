@@ -1,0 +1,93 @@
+﻿@model List<RaceDay.MVC.Models.CategoryResponseDto>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+    var eventId = ViewBag.EventId;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Event Categories</h2>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="row">
+        <!-- List of Categories -->
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">Current Categories</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Fee</th>
+                                <th>Capacity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count == 0)
+                            {
+                                <tr><td colspan="4" class="text-center py-3">No categories yet.</td></tr>
+                            }
+                            @foreach (var cat in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@cat.Name</td>
+                                    <td>@cat.CategoryType</td>
+                                    <td>@(cat.EntryFee.HasValue ? $"R{cat.EntryFee}" : "Free")</td>
+                                    <td>@cat.Capacity</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Category Form -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">Add New Category</div>
+                <div class="card-body">
+                    <form asp-action="CreateCategory" asp-route-eventId="@eventId" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Category Name</label>
+                            <input name="Name" class="form-control" placeholder="e.g. Senior Men, 10km" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Type</label>
+                            <select name="CategoryType" class="form-select" required>
+                                <option value="Age">Age</option>
+                                <option value="Distance">Distance</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Min Age</label>
+                                <input name="MinAge" type="number" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Max Age</label>
+                                <input name="MaxAge" type="number" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Entry Fee (R)</label>
+                                <input name="EntryFee" type="number" step="0.01" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Capacity</label>
+                                <input name="Capacity" type="number" class="form-control" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
