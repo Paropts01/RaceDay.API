@@ -134,13 +134,8 @@ Unit tests help identify errors and verify that the tested functionality behaves
 <img width="1365" height="565" alt="Screenshot 2026-10-16 034043" src="https://github.com/user-attachments/assets/cf0e1393-44cd-4224-939f-e014425edc52" />
 <img width="1350" height="422" alt="Screenshot 2026-10-16 034117" src="https://github.com/user-attachments/assets/8a91182e-6854-49b4-814e-456b2f62ed65" />
 
-## 12.YouTube Unlisted Link
-https://youtu.be/bwvw_3gtn18 
-
-
-## 13. Conclusion
-
-RaceDay API provides a foundation for developing and testing web API functionality using ASP.NET Core, Entity Framework Core, and SQL Server. Swagger simplifies API testing and documentation, while unit tests help verify the application's functionality.
+## 12.YouTube Unlisted Link for part 3
+https://youtu.be/ghyq7RlVm7s
 
 ## POE final part docker commands set up
 ## Running RaceDay with Docker
@@ -270,3 +265,9 @@ docker compose up -d
 - Azure Blob Storage is used for storing uploaded event banners and profile pictures.
 - The `.env` file contains private credentials and must never be committed to GitHub.
 - The `.env.example` file provides a template for configuring the required environment variables.
+
+
+## 13. Conclusion
+
+RaceDay API provides a foundation for developing and testing web API functionality using ASP.NET Core, Entity Framework Core, and SQL Server. Swagger simplifies API testing and documentation, while unit tests help verify the application's functionality.
+
